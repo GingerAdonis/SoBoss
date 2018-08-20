@@ -1,0 +1,23 @@
+{
+  "name": "soboss",
+  "version": "0.1.0",
+  "private": false,
+  "scripts": {
+    "start": "cross-env NODE_ENV=development node app.js | bunyan",
+    "startProd": "cross-env NODE_ENV=production node app.js | bunyan"
+  },
+  "author": {
+    "name": "Jarno Veuger",
+    "email": "dev@jarnoveuger.nl",
+    "url": "https://jarnoveuger.nl"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JarnoVgr/SoBoss.git"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.12",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {}
+}

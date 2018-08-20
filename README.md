@@ -1,2 +1,2 @@
 # SoBoss
-Simple Sonos group manager that can run on a Raspberry Pi or any other device that supports nodejs.
+Simple Sonos group manager that runs on a Raspberry Pi and any other device that supports nodejs.
