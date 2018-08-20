@@ -100,6 +100,7 @@ class App {
     static initModules() {
         return new Promise(async (resolve, reject) => {
             global.Events = require('./base/events');
+            global.Sonos = require('./base/sonos');
             global.GenericDevices = require('./base/genericDevices');
 
             resolve();
