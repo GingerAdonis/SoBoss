@@ -26,6 +26,7 @@
   },
   "globals": {
     "log": true,
-    "config": true
+    "Config": true,
+    "Events": true
   }
 }

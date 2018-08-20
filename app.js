@@ -1,5 +1,19 @@
 #!/usr/bin/env node
 
+//Display detailed info about Unhandled Promise rejections and Uncaught Exceptions
+process.on('unhandledRejection', (reason, p) => {
+    if (log && typeof(log.fatal) === 'function')
+        log.fatal('Unhandled Rejection at:', p, 'reason:', reason);
+    else
+        console.fatal('Unhandled Rejection at:', p, 'reason:', reason);
+});
+process.on('uncaughtException', error => {
+    if (log && typeof(log.fatal) === 'function')
+        log.fatal('Uncaught Exception:', error);
+    else
+        console.fatal('Uncaught Exception:', error);
+});
+
 console.log('######');
 console.log('SoBoss');
 console.log('######');
@@ -49,16 +63,24 @@ class App {
     }
 
     static initConfig() {
-        const _ = require('lodash');
-        const module = './config/env.json';
-        delete require.cache[require.resolve(module)];
-        const env = require(module);
+        const configFile = './config/env.json';
+
+        const fs = require('fs');
+        log.info(`Using configuration file: ${fs.realpathSync(configFile)}`);
+
+
+        //Clear from cache
+        delete require.cache[require.resolve(configFile)];
+
+        const env = require(configFile);
 
         if (typeof(env[this.env]) !== 'object') {
             log.warn('No custom environment config set!');
             global.Config = env['base'];
-        } else
+        } else {
+            const _ = require('lodash');
             global.Config = _.defaultsDeep(_.clone(env[this.env]), env['base']);
+        }
 
         if (!Config.configReloadTimeSeconds) {
             log.warn('No config reload time set. Reloading is disabled.');
@@ -77,7 +99,9 @@ class App {
      */
     static initModules() {
         return new Promise(async (resolve, reject) => {
-            
+            global.Events = require('./base/events');
+            global.GenericDevices = require('./base/genericDevices');
+
             resolve();
         });
     }
@@ -94,10 +118,6 @@ class App {
         this.initLog();
         this.initConfig();
         log.info(`Current environment: ${this.env} (debug: %s}`, this.isDevelopment);
-
-        //Display detailed info about Unhandled Promise rejections and Uncaught Exceptions
-        process.on('unhandledRejection', (reason, p) => log.fatal('Unhandled Rejection at:', p, 'reason:', reason));
-        process.on('uncaughtException', error => log.fatal('Uncaught Exception:', error));
 
         try {
             await this.initModules();
