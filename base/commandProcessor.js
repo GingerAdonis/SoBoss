@@ -69,6 +69,12 @@ class CommandProcessor {
                         case 'setVolume':
                             await this.setVolume(data);
                             break;
+                        case 'pausePlay':
+                            await this.setPlayState('pause', data);
+                            break;
+                        case 'resumePlay':
+                            await this.setPlayState('resume', data);
+                            break;
                         case 'joinGroup':
                             await this.joinGroup(data);
                             break;
@@ -97,7 +103,7 @@ class CommandProcessor {
         return new Promise(async (resolve, reject) => {
             let volume = 0;
             if (typeof(data) === 'number') {
-                volume = data;
+                volume = Utils.mathClamp(data, 0, 100);
             } else if (typeof(data) === 'string') {
                 if (!this.getSourceSpeakers().size) {
                     reject(new Error(`setVolume requires source speakers`));
@@ -135,16 +141,22 @@ class CommandProcessor {
                 }
             }
 
+            const promises = [];
             for (const speaker of this.getTargetSpeakers().values()) {
-                try {
-                    await speaker.getDevice().setVolume(volume, 'Master');
-                } catch (error) {
-                    log.warn(error);
-                    continue;
-                }
+                promises.push(speaker.getDevice().setVolume(volume, 'Master'));
             }
 
-            log.info(`Setting volume of speaker(s) ${Array.from(this.getSpeakers().keys()).join(', ')} to ${volume}%`);
+            try {
+                await Promise.all(promises);
+            } catch (error) {
+                log.warn(error);
+            }
+
+            //Hard limit maximum set volume to prevent ear damage
+            if (typeof(Config.sonos.maxSetVolume) === 'number')
+                volume = Math.min(Config.sonos.maxSetVolume, volume);
+
+            log.info(`Set volume of target speaker(s) ${Array.from(this.getTargetSpeakers().keys()).join(', ')} to ${volume}%`);
 
             resolve();
         });
@@ -157,18 +169,20 @@ class CommandProcessor {
      */
     joinGroup(data) {
         return new Promise(async (resolve, reject) => {
+            const promises = [];
             for (const speaker of this.getTargetSpeakers().values()) {
-                try {
-                    const speakerSuccess = await speaker.getDevice().joinGroup(data, false);
-                    if (!speakerSuccess)
-                        log.warn(new Error(`Failed to add speaker ${speaker.getIdentifier()} to group ${data}`));
-                } catch (error) {
-                    log.warn(error);
-                    continue;
-                }
+                promises.push(speaker.getDevice().joinGroup(data, false));
             }
 
-            log.info(`Speaker(s) ${Array.from(this.getSpeakers().keys()).join(', ')} joined group ${data}`);
+            try {
+                const speakerSuccess = await Promise.all(promises);
+                if (!speakerSuccess)
+                    log.warn(new Error(`Failed to some speakers to group ${data}`));
+            } catch (error) {
+                log.warn(error);
+            }
+
+            log.info(`Target speaker(s) ${Array.from(this.getTargetSpeakers().keys()).join(', ')} joined group ${data}`);
 
             resolve();
         });
@@ -181,16 +195,64 @@ class CommandProcessor {
      */
     leaveGroup(data) {
         return new Promise(async (resolve, reject) => {
+            const promises = [];
             for (const speaker of this.getTargetSpeakers().values()) {
-                try {
-                    await speaker.getDevice().leaveGroup();
-                } catch (error) {
-                    log.warn(error);
-                    continue;
-                }
+                promises.push(speaker.getDevice().leaveGroup());
             }
 
-            log.info(`Speaker(s) ${Array.from(this.getSpeakers().keys()).join(', ')} left their group`);
+            try {
+                await Promise.all(promises);
+            } catch (error) {
+                log.warn(error);
+            }
+
+            log.info(`Target speaker(s) ${Array.from(this.getTargetSpeakers().keys()).join(', ')} left their group`);
+
+            resolve();
+        });
+    }
+
+    /**
+     * Leave Group
+     * @param {string} state
+     * @param {any} data
+     * @return {Promise<void>}
+     */
+    setPlayState(state, data) {
+        return new Promise(async (resolve, reject) => {
+            const promises = [];
+            for (const speaker of this.getTargetSpeakers().values()) {
+                let result;
+                if (state === 'pause')
+                    result = speaker.getDevice().pause();
+                //ToDo: Finish resume implementation, we need to remember the previous state
+                /*if (state === 'resume') {
+                    //Check for always resume
+                    if (typeof(data) === 'boolean' && data)
+                        result = speaker.getDevice().play();
+                    else {
+                        if (speaker.getPaused()) {
+                            result = speaker.getDevice().play();
+                        } else {
+                            resolve();
+                            return;
+                        }
+                    }
+                } */ else {
+                    reject(new Error(`Invalid play state: ${state}`));
+                    return;
+                }
+
+                promises.push(result);
+            }
+
+            try {
+                await Promise.all(promises);
+            } catch (error) {
+                log.warn(error);
+            }
+
+            log.info(`Set play state of target speaker(s) ${Array.from(this.getTargetSpeakers().keys()).join(', ')} to ${state}`);
 
             resolve();
         });
