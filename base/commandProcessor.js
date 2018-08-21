@@ -11,7 +11,7 @@ class CommandProcessor {
         /** @type {Map<string, Speaker>} */
         this.targetSpeakers = new Map();
         for (const identifier of targetSpeakersIdentifiers) {
-            const speaker = Sonos.get(speakerIdentifier);
+            const speaker = Sonos.get(identifier);
             if (!speaker) {
                 log.warn(`Command processor includes not available target speaker: ${identifier}`);
                 continue;
