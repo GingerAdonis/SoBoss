@@ -69,6 +69,7 @@ class GenericDevicePingCheck {
                 return;
             }
 
+            //resolve(Utils.mathRandom(0, 1) === 0 ? false : true);
             resolve(!!(pingResult && pingResult.alive));
         });
     }

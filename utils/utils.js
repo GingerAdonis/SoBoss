@@ -13,6 +13,16 @@ class Utils {
     static mathClamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
     }
+
+    /**
+     *
+     * @param {number} min
+     * @param {number} max
+     * @return {number}
+     */
+    static mathRandom(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
 }
 
 module.exports = Utils;

@@ -5,6 +5,10 @@ class GenericDevice {
      */
     constructor(identifier) {
         this.setIdentifier(identifier);
+
+        this.listenToEvents();
+
+        this.eventsCommands = {};
     }
 
     /**
@@ -85,6 +89,23 @@ class GenericDevice {
             if (typeof(config.pingIntervalMs) === 'number')
                 this.getPingCheck().setPingIntervalMs(config.pingIntervalMs);
         }
+
+        this.parseConfigEvents(config);
+    }
+
+    /**
+     * Parse device event config
+     * @param {object} config
+     */
+    parseConfigEvents(config) {
+        const eventNames = ['onAvailable', 'onUnavailable'];
+        for (const eventName of eventNames) {
+            const eventConfig = config[eventName];
+            if (!(eventConfig instanceof Array))
+                continue;
+
+            this.eventsCommands[eventName] = eventConfig;
+        }
     }
 
     /**
@@ -133,6 +154,30 @@ class GenericDevice {
             }
 
             resolve();
+        });
+    }
+
+    listenToEvents() {
+        Events.on('deviceAvailabilityChange', async (device, available) => {
+            if (device !== this)
+                return;
+
+            log.info(`Device ${this.getIdentifier()} became ${available ? 'available' : 'unavailable'}`);
+
+            const commands = available ? this.eventsCommands['onAvailable'] : this.eventsCommands['onUnavailable'];
+            if (!commands instanceof Array) {
+                log.warn(`No commands to process`);
+                return;
+            }
+
+            for (const command of commands) {
+                try {
+                    const commandProcessor = new CommandProcessor(command);
+                    await commandProcessor.process();
+                } catch (error) {
+                    log.error(error);
+                }
+            }
         });
     }
 }
