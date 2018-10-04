@@ -100,12 +100,14 @@ class App {
     static initModules() {
         return new Promise(async (resolve, reject) => {
             global.Utils = require('./utils/utils');
-            global.CommandProcessor = require('./base/commandProcessor');
             global.Events = require('./base/events');
             global.Sonos = require('./base/sonos');
-            global.GenericDevices = require('./base/genericDevices');
+            global.CommandProcessor = require('./base/commandProcessor');
+            setTimeout(() => {
+                global.GenericDevices = require('./base/genericDevices');
 
-            resolve();
+                resolve();
+            }, 5000);
         });
     }
 

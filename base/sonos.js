@@ -1,5 +1,4 @@
-log.info('Sonos time...');
-
+/** @type {Map<string, Speaker>} */
 const speakers = new Map();
 
 const {DeviceDiscovery} = require('sonos');
@@ -21,10 +20,12 @@ DeviceDiscovery(async (device) => {
     const modelName = description.modelName;
     const roomName = description.roomName;
 
-    if (!serialNum || !modelName || !roomName) {
-        log.warn(`Found speaker at ${device.host} without a serial number, model name and/or room name`);
+    if (!serialNum || !modelName || !roomName || !description.UDN) {
+        log.warn(`Found speaker at ${device.host} without a serial number, model name, UDN and/or room name`);
         return;
     }
+
+    const udn = description.UDN.replace('uuid:', '');
 
     const speakerConfig = Config.sonos.speakers[serialNum];
     if (!speakerConfig || !speakerConfig.identifier) {
@@ -46,14 +47,15 @@ DeviceDiscovery(async (device) => {
     speaker.setRoomName(roomName);
     speaker.setSerialNum(serialNum);
     speaker.setName(modelName);
+    speaker.setUdn(udn);
 
     log.info(`Discovered ${isNew ? 'new' : 'existing'} ${speaker.getName()} speaker at ${speaker.getHostAddress()} (serial number ${serialNum})`);
 
-    //Get description
-    //log.debug(description);
-
-    //Get group info
-    //log.debug(`Zone`, await device.getTopology());
+    //Log device info
+    log.debug(`Description`, description);
+    log.debug(`ZoneInfo`, await device.getZoneInfo());
+    log.debug(`GetAllGroups`, await device.getAllGroups());
+    log.debug(`CurrentTrack`, await device.currentTrack());
 }, undefined);
 
 class Sonos {

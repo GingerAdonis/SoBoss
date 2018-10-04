@@ -59,18 +59,11 @@ class GenericDevicePingCheck {
      */
     check() {
         return new Promise(async (resolve, reject) => {
-            let pingResult;
-            try {
-                pingResult = await Ping.promise.probe(this.getGenericDevice().getHostAddress(), {
-                    timeout: Config.ping.timeOutMs
-                });
-            } catch(error) {
-                reject(error);
-                return;
-            }
-
-            //resolve(Utils.mathRandom(0, 1) === 0 ? false : true);
-            resolve(!!(pingResult && pingResult.alive));
+            Ping.sys.probe(this.getGenericDevice().getHostAddress(), (isAlive) => {
+                resolve(isAlive);
+            }, {
+                timeout: Config.ping.timeOutMs / 1000
+            });
         });
     }
 
@@ -104,6 +97,8 @@ class GenericDevicePingCheck {
                 return;
             }
             this.lastAvailability = available;
+
+            log.debug(`Ping state of ${this.getGenericDevice().getIdentifier()} changed: ${available}`);
 
             Events.emit('deviceAvailabilityChange', this.getGenericDevice(), available);
             resolve();
