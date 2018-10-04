@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "bunyan": "^1.8.12",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "ping": "^0.2.2",
-    "sonos": "^1.4.0"
+    "sonos": "^1.5.1"
   },
   "devDependencies": {
     "cross-env": "^5.2.0"
