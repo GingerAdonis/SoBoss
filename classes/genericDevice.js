@@ -56,7 +56,7 @@ class GenericDevice {
             return;
 
         const PingCheck = require('./genericDevice/pingCheck');
-        const pingCheck = this.pingCheck = new PingCheck(this);
+        this.pingCheck = new PingCheck(this);
     }
 
     /**
