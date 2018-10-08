@@ -52,7 +52,8 @@ class GenericDevice {
         if (!enabled) {
             delete this.pingCheck;
             return;
-        }
+        } else if (typeof(this.pingCheck) === 'object')
+            return;
 
         const PingCheck = require('./genericDevice/pingCheck');
         const pingCheck = this.pingCheck = new PingCheck(this);
