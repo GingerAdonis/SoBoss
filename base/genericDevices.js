@@ -14,8 +14,9 @@ class GenericDevices {
         for (const deviceConfig of Config.genericDevices) {
             const deviceIdentifier = deviceConfig.identifier;
 
-            const genericDevice = cachedGenericDevices.has(deviceIdentifier) ? cachedGenericDevices.get(deviceIdentifier) : new GenericDevice(deviceIdentifier);
-            if (!cachedGenericDevices.has(deviceIdentifier))
+            const inCache = cachedGenericDevices.has(deviceIdentifier);
+            const genericDevice = inCache ? cachedGenericDevices.get(deviceIdentifier) : new GenericDevice(deviceIdentifier);
+            if (!inCache)
                 cachedGenericDevices.set(deviceIdentifier, genericDevice);
 
             genericDevice.parseConfig(deviceConfig);
