@@ -52,10 +52,10 @@ DeviceDiscovery(async (device) => {
     log.info(`Discovered ${isNew ? 'new' : 'existing'} ${speaker.getName()} speaker at ${speaker.getHostAddress()} (serial number ${serialNum})`);
 
     //Log device info
-    log.debug(`Description`, description);
+    /*log.debug(`Description`, description);
     log.debug(`ZoneInfo`, await device.getZoneInfo());
     log.debug(`GetAllGroups`, await device.getAllGroups());
-    log.debug(`CurrentTrack`, await device.currentTrack());
+    log.debug(`CurrentTrack`, await device.currentTrack());*/
 }, undefined);
 
 class Sonos {
