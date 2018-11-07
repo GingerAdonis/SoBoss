@@ -66,7 +66,7 @@ class App {
         const configFile = './config/env.json';
 
         const fs = require('fs');
-        log.info(`Re(loading) configuration using file: ${fs.realpathSync(configFile)}`);
+        log.info(`${!global.Config ? `Loading` : `Reloading`} configuration using file: ${fs.realpathSync(configFile)}`);
 
         //Clear from cache
         delete require.cache[require.resolve(configFile)];

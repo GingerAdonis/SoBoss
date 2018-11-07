@@ -19,7 +19,7 @@
     "bunyan": "^1.8.12",
     "lodash": "^4.17.11",
     "ping": "^0.2.2",
-    "sonos": "^1.5.1"
+    "sonos": "git://github.com/JarnoVgr/node-sonos.git"
   },
   "devDependencies": {
     "cross-env": "^5.2.0"
