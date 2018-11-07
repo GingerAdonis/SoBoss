@@ -29,7 +29,7 @@ DeviceDiscovery(async (device) => {
 
     const speakerConfig = Config.sonos.speakers[serialNum];
     if (!speakerConfig || !speakerConfig.identifier) {
-        log.warn(`Found speaker at ${device.host} (serial number ${serialNum}) but not available in or invalid config`);
+        log.info(`Found speaker at ${device.host} (serial number ${serialNum}) but not available in or invalid config`);
         return;
     }
 
