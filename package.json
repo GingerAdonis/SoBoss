@@ -1,6 +1,6 @@
 {
   "name": "soboss",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "scripts": {
     "start": "cross-env NODE_ENV=development node app.js | bunyan",
@@ -11,6 +11,7 @@
     "email": "dev@jarnoveuger.nl",
     "url": "https://jarnoveuger.nl"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/JarnoVgr/SoBoss.git"
@@ -19,7 +20,7 @@
     "bunyan": "^1.8.12",
     "lodash": "^4.17.11",
     "ping": "^0.2.2",
-    "sonos": "git://github.com/JarnoVgr/node-sonos.git"
+    "sonos": "^1.9.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0"
