@@ -2,13 +2,13 @@
 
 //Display detailed info about Unhandled Promise rejections and Uncaught Exceptions
 process.on('unhandledRejection', (reason, p) => {
-    if (log && typeof(log.fatal) === 'function')
+    if (typeof(log) !== 'undefined' && typeof(log.fatal) === 'function')
         log.fatal('Unhandled Rejection at:', p, 'reason:', reason);
     else
         console.fatal('Unhandled Rejection at:', p, 'reason:', reason);
 });
 process.on('uncaughtException', error => {
-    if (log && typeof(log.fatal) === 'function')
+    if (typeof(log) !== 'undefined' && typeof(log.fatal) === 'function')
         log.fatal('Uncaught Exception:', error);
     else
         console.fatal('Uncaught Exception:', error);
