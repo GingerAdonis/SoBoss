@@ -5,13 +5,13 @@ process.on('unhandledRejection', (reason, p) => {
     if (typeof(log) !== 'undefined' && typeof(log.fatal) === 'function')
         log.fatal('Unhandled Rejection at:', p, 'reason:', reason);
     else
-        console.fatal('Unhandled Rejection at:', p, 'reason:', reason);
+        console.error('Unhandled Rejection at:', p, 'reason:', reason);
 });
 process.on('uncaughtException', error => {
     if (typeof(log) !== 'undefined' && typeof(log.fatal) === 'function')
         log.fatal('Uncaught Exception:', error);
     else
-        console.fatal('Uncaught Exception:', error);
+        console.error('Uncaught Exception:', error);
 });
 
 console.log('######');
