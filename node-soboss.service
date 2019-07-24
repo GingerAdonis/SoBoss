@@ -1,0 +1,20 @@
+#Example systemd file to run SoBoss via nvm
+#Must be placed in, for example, `/lib/systemd/system/`
+
+[Unit]
+Description=Node.js app for SoBoss
+After=network.target
+
+[Service]
+Type=simple
+User=soboss
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+WorkingDirectory=/home/soboss/app
+Environment=NODE_ENV=production
+Restart=on-failure
+ExecStart=/home/soboss/.nvm/nvm-exec npm start
+
+[Install]
+WantedBy=multi-user.target
