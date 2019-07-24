@@ -1,10 +1,9 @@
 {
   "name": "soboss",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "scripts": {
-    "start": "cross-env NODE_ENV=development node app.js | bunyan",
-    "startProd": "cross-env NODE_ENV=production node app.js | bunyan"
+    "start": "node app.js | bunyan"
   },
   "author": {
     "name": "Jarno Veuger",
@@ -22,7 +21,5 @@
     "ping": "^0.2.2",
     "sonos": "^1.12.2"
   },
-  "devDependencies": {
-    "cross-env": "^5.2.0"
-  }
+  "devDependencies": {}
 }
