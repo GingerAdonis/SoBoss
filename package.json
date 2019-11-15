@@ -19,7 +19,7 @@
     "bunyan": "^1.8.12",
     "lodash": "^4.17.15",
     "ping": "^0.2.2",
-    "sonos": "^1.12.2"
+    "sonos": "^1.12.5"
   },
   "devDependencies": {}
 }
