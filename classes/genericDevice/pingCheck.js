@@ -21,7 +21,6 @@ class GenericDevicePingCheck {
      */
     setPingIntervalMs(pingIntervalMs) {
         this.pingIntervalMs = pingIntervalMs;
-
     }
 
     /**
@@ -59,7 +58,7 @@ class GenericDevicePingCheck {
      */
     check() {
         return new Promise(async (resolve, reject) => {
-            Ping.sys.probe(this.getGenericDevice().getHostAddress(), (isAlive) => {
+            Ping.sys.probe(this.getGenericDevice().getHostAddress(), isAlive => {
                 resolve(isAlive);
             }, {
                 timeout: Config.ping.timeOutMs / 1000
