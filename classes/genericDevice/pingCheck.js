@@ -1,10 +1,14 @@
-const Ping = require('ping');
+const ping = require('net-ping');
 
 class GenericDevicePingCheck {
     constructor(genericDevice) {
         this.genericDevice = genericDevice;
+        this.pingSession = ping.createSession({
+            packetSize: 64,
+            timeout: Config.ping['timeOutMs']
+        });
 
-        this.setPingIntervalMs(Config.ping.defaultInterval);
+        this.setPingIntervalMs(Config.ping['defaultInterval']);
     }
 
     /**
@@ -58,10 +62,8 @@ class GenericDevicePingCheck {
      */
     check() {
         return new Promise(async (resolve, reject) => {
-            Ping.sys.probe(this.getGenericDevice().getHostAddress(), isAlive => {
-                resolve(isAlive);
-            }, {
-                timeout: Config.ping.timeOutMs / 1000
+            this.pingSession.pingHost(this.getGenericDevice().getHostAddress(), (error, target) => {
+                resolve(!error);
             });
         });
     }
