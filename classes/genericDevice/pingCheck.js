@@ -5,7 +5,8 @@ class GenericDevicePingCheck {
         this.genericDevice = genericDevice;
         this.pingSession = ping.createSession({
             packetSize: 64,
-            timeout: Config.ping['timeOutMs']
+            timeout: Config.ping['timeOutMs'],
+            retries: Config.ping['retries'],
         });
 
         this.setPingIntervalMs(Config.ping['defaultInterval']);
