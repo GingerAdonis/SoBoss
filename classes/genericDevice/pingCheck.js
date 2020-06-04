@@ -1,13 +1,8 @@
-const ping = require('net-ping');
+const ping = require('ping');
 
 class GenericDevicePingCheck {
     constructor(genericDevice) {
         this.genericDevice = genericDevice;
-        this.pingSession = ping.createSession({
-            packetSize: 64,
-            timeout: Config.ping['timeOutMs'],
-            retries: Config.ping['retries'],
-        });
 
         this.setPingIntervalMs(Config.ping['defaultInterval']);
     }
@@ -59,14 +54,14 @@ class GenericDevicePingCheck {
 
     /**
      * Perform a ping check
-     * @return {Promise<boolean>} available
+     * @return {Promise<boolean>} Is online
      */
-    check() {
-        return new Promise(async (resolve, reject) => {
-            this.pingSession.pingHost(this.getGenericDevice().getHostAddress(), (error, target) => {
-                resolve(!error);
-            });
+    async check() {
+        const result = await ping.promise.probe(this.getGenericDevice().getHostAddress(), {
+            timeout: Math.round(Config.ping['timeOutMs'] / 1000),
+            packetSize: 64
         });
+        return result.alive ?? false;
     }
 
     /**
@@ -88,13 +83,13 @@ class GenericDevicePingCheck {
             let available;
             try {
                 available = await this.check();
-            } catch(error) {
+            } catch (error) {
                 log.warn(error);
                 available = false;
             }
 
             //Nothing has changed
-            if (typeof(this.lastAvailability) === 'boolean' && this.lastAvailability === available) {
+            if (typeof (this.lastAvailability) === 'boolean' && this.lastAvailability === available) {
                 resolve();
                 return;
             }
