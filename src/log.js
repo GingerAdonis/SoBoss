@@ -1,5 +1,6 @@
 import { format } from 'util';
 import chalk from 'chalk';
+import Config from './config';
 
 const logLevelColors = {
   debug: chalk.white,
@@ -11,7 +12,9 @@ const logLevelColors = {
 
 const Log = {
   debug: (...args) => {
-    console.debug(logLevelColors.debug('[DEBUG]'), format(...args));
+    if (Config.development) {
+      console.debug(logLevelColors.debug('[DEBUG]'), format(...args));
+    }
   },
   info: (...args) => {
     console.debug(logLevelColors.info('[INFO]'), format(...args));
