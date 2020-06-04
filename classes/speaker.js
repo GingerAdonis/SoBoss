@@ -102,100 +102,52 @@ class Speaker {
      * @param {string} speakerName
      * @return {Promise<boolean>} success
      */
-    joinSpeaker(speakerName) {
-        return new Promise(async (resolve, reject) => {
-            const speaker = Sonos.get(speakerName);
-            if (!speaker) {
-                reject(new Error(`Unable to find speaker '${speakerName}'`));
-                return;
-            }
+    async joinSpeaker(speakerName) {
+        const speaker = Sonos.get(speakerName);
+        if (!speaker) {
+            throw new Error(`Unable to find speaker '${speakerName}'`);
+        }
 
-            const joinRoomName = speaker.getRoomName();
+        const joinRoomName = speaker.getRoomName();
 
-            let success;
-            try {
-                success = await this.getDevice().joinGroup(joinRoomName);
-            } catch(error) {
-                reject(error);
-                return;
-            }
-
-            resolve(success);
-        });
+        return this.getDevice().joinGroup(joinRoomName);
     }
 
     /**
      * Leave a room
      * @return {Promise<void>}
      */
-
-    /*leaveRoom() {
-        return new Promise(async (resolve, reject) => {
-            try {
+    /*async leaveRoom() {
                 await this.getDevice().leaveGroup();
-            } catch(error) {
-                reject(error);
-                return;
-            }
-
-            resolve();
-        });
     }*/
 
     /**
      * Start regular play
      * @return {Promise<boolean>} success
      */
-    play() {
-        return new Promise(async (resolve, reject) => {
-            let success = true;
-            try {
-                await this.getDevice().play();
-            } catch(error) {
-                log.debug(`Play failed`);
-                success = false;
-            }
-
-            resolve(success);
-        });
+    async play() {
+        await this.getDevice().play();
+        return true;
     }
 
     /**
      * Start S/PDIF play
      * @return {Promise<boolean>} success
      */
-    playSPDIF() {
-        return new Promise(async (resolve, reject) => {
-            log.debug(`PlaySPDIF`, `x-sonos-htastream:${this.getUdn()}:spdif`);
+    async playSPDIF() {
+        log.debug(`PlaySPDIF`, `x-sonos-htastream:${this.getUdn()}:spdif`);
 
-            let success = true;
-            try {
-                await this.getDevice().setAVTransportURI(`x-sonos-htastream:${this.getUdn()}:spdif`);
-            } catch(error) {
-                log.debug(`Play failed`);
-                success = false;
-            }
-
-            resolve(success);
-        });
+        await this.getDevice().setAVTransportURI(`x-sonos-htastream:${this.getUdn()}:spdif`);
+        return true;
     }
 
     /**
      * Pause when playing
      * @return {Promise<boolean>} success
      */
-    pause() {
-        return new Promise(async (resolve, reject) => {
-            let success = true;
-            try {
-                await this.getDevice().pause();
-            } catch(error) {
-                log.debug(`Pause failed`);
-                success = false;
-            }
-
-            resolve(success);
-        });
+    async pause() {
+        await this.getDevice().pause();
+        return true;
     }
 }
 

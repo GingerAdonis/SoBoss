@@ -52,7 +52,7 @@ class GenericDevice {
         if (!enabled) {
             delete this.pingCheck;
             return;
-        } else if (typeof(this.pingCheck) === 'object')
+        } else if (typeof (this.pingCheck) === 'object')
             return;
 
         const PingCheck = require('./genericDevice/pingCheck');
@@ -72,7 +72,7 @@ class GenericDevice {
      * @return {boolean}
      */
     hasPingCheck() {
-        return typeof(this.pingCheck) === 'object';
+        return typeof (this.pingCheck) === 'object';
     }
 
     /**
@@ -80,14 +80,14 @@ class GenericDevice {
      * @param {object} config
      */
     parseConfig(config) {
-        if (typeof(config.hostAddress) === 'string')
+        if (typeof (config.hostAddress) === 'string')
             this.setHostAddress(config.hostAddress);
         if (config.checks instanceof Array) {
             this.setPingCheck(config.checks.includes('ping'));
         }
 
         if (this.hasPingCheck()) {
-            if (typeof(config.pingIntervalMs) === 'number')
+            if (typeof (config.pingIntervalMs) === 'number')
                 this.getPingCheck().setPingIntervalMs(config.pingIntervalMs);
         }
 
@@ -133,29 +133,16 @@ class GenericDevice {
      * @param {Date} [date=now]
      * @return {Promise<void>}
      */
-    think(date) {
-        return new Promise(async (resolve, reject) => {
-            if (!date)
-                date = new Date();
+    async think(date = new Date()) {
+        const now = new Date();
+        if (now < this.getNextThink()) {
+            return;
+        }
+        this.setNextThink();
 
-            const now = new Date();
-            if (now < this.getNextThink()) {
-                resolve();
-                return;
-            }
-            this.setNextThink();
-
-            if (this.hasPingCheck()) {
-                try {
-                    await this.getPingCheck().think(now);
-                } catch (error) {
-                    reject(error);
-                    return;
-                }
-            }
-
-            resolve();
-        });
+        if (this.hasPingCheck()) {
+            await this.getPingCheck().think(now);
+        }
     }
 
     listenToEvents() {

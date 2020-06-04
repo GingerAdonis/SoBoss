@@ -2,13 +2,13 @@
 
 //Display detailed info about Unhandled Promise rejections and Uncaught Exceptions
 process.on('unhandledRejection', (reason, p) => {
-    if (typeof(log) !== 'undefined' && typeof(log.fatal) === 'function')
+    if (typeof (log) !== 'undefined' && typeof (log.fatal) === 'function')
         log.fatal('Unhandled Rejection at:', p, 'reason:', reason);
     else
         console.error('Unhandled Rejection at:', p, 'reason:', reason);
 });
 process.on('uncaughtException', error => {
-    if (typeof(log) !== 'undefined' && typeof(log.fatal) === 'function')
+    if (typeof (log) !== 'undefined' && typeof (log.fatal) === 'function')
         log.fatal('Uncaught Exception:', error);
     else
         console.error('Uncaught Exception:', error);
@@ -73,7 +73,7 @@ class App {
 
         const env = require(configFile);
 
-        if (typeof(env[this.env]) !== 'object') {
+        if (typeof (env[this.env]) !== 'object') {
             log.warn('No custom environment config set!');
             global.Config = env['base'];
         } else {
@@ -95,18 +95,16 @@ class App {
      * Initialize modules
      * @return {Promise<void>}
      */
-    static initModules() {
-        return new Promise(async (resolve, reject) => {
-            global.Utils = require('./utils/utils');
-            global.Events = require('./base/events');
-            global.Sonos = require('./base/sonos');
-            global.CommandProcessor = require('./base/commandProcessor');
-            setTimeout(() => {
-                global.GenericDevices = require('./base/genericDevices');
+    static async initModules() {
+        global.Utils = require('./utils/utils');
+        global.Events = require('./base/events');
+        global.Sonos = require('./base/sonos');
+        global.CommandProcessor = require('./base/commandProcessor');
 
-                resolve();
-            }, 5000);
-        });
+        //ToDo: Find out why we wait
+        await new Promise(r => setTimeout(r, 2000));
+        global.GenericDevices = require('./base/genericDevices');
+        await new Promise(r => setTimeout(r, 2000));
     }
 
     /**

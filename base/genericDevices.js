@@ -54,30 +54,23 @@ class GenericDevices {
      * Think
      * @return {Promise<void>}
      */
-    static think() {
-        return new Promise(async (resolve, reject) => {
-            const now = new Date();
+    static async think() {
+        const now = new Date();
 
-            const promises = [];
-            for (const genericDevice of this.getAll()) {
-                promises.push(genericDevice.think(now));
-            }
+        const promises = [];
+        for (const genericDevice of this.getAll()) {
+            promises.push(genericDevice.think(now));
+        }
+        await Promise.all(promises);
+
+
+        setTimeout(async () => {
             try {
-                await Promise.all(promises);
+                await this.think();
             } catch (error) {
-                reject(error);
+                log.error(error);
             }
-
-            setTimeout(async () => {
-                try {
-                    await this.think();
-                } catch (error) {
-                    log.error(error);
-                }
-            }, thinkTimeMs);
-
-            resolve();
-        });
+        }, thinkTimeMs);
     }
 }
 
@@ -89,7 +82,7 @@ const init = async () => {
     GenericDevices.load();
     try {
         await GenericDevices.think();
-    } catch(error) {
+    } catch (error) {
         log.error(error);
     }
 };

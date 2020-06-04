@@ -69,37 +69,32 @@ class GenericDevicePingCheck {
      * @param {Date} [date=now]
      * @return {Promise<void>}
      */
-    think(date) {
-        return new Promise(async (resolve, reject) => {
-            if (!date)
-                date = new Date();
+    async think(date) {
+        if (!date)
+            date = new Date();
 
-            if (date < this.getNextCheck()) {
-                resolve();
-                return;
-            }
-            this.setNextCheck();
+        if (date < this.getNextCheck()) {
+            return;
+        }
+        this.setNextCheck();
 
-            let available;
-            try {
-                available = await this.check();
-            } catch (error) {
-                log.warn(error);
-                available = false;
-            }
+        let available;
+        try {
+            available = await this.check();
+        } catch (error) {
+            log.warn(error);
+            available = false;
+        }
 
-            //Nothing has changed
-            if (typeof (this.lastAvailability) === 'boolean' && this.lastAvailability === available) {
-                resolve();
-                return;
-            }
-            this.lastAvailability = available;
+        //Nothing has changed
+        if (typeof (this.lastAvailability) === 'boolean' && this.lastAvailability === available) {
+            return;
+        }
+        this.lastAvailability = available;
 
-            log.debug(`Ping state of ${this.getGenericDevice().getIdentifier()} changed: ${available}`);
+        log.debug(`Ping state of ${this.getGenericDevice().getIdentifier()} changed: ${available}`);
 
-            Events.emit('deviceAvailabilityChange', this.getGenericDevice(), available);
-            resolve();
-        });
+        Events.emit('deviceAvailabilityChange', this.getGenericDevice(), available);
     }
 }
 
