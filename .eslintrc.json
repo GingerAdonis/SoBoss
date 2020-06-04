@@ -1,32 +1,54 @@
 {
-  "env": {
-    "node": true,
-    "es6": true
-  },
-  "extends": "eslint:recommended",
-  "rules": {
-    "indent": [
-      "error",
-      4,
-      {
-        "SwitchCase": 1
-      }
+    "root": true,
+    "parser": "babel-eslint",
+    "plugins": [
+        "promise",
+        "jsdoc"
     ],
-    "quotes": [
-      "error",
-      "single",
-      {
-        "allowTemplateLiterals": true
-      }
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "airbnb-base",
+        "plugin:jsdoc/recommended",
+        "plugin:promise/recommended"
     ],
-    "semi": [
-      "error",
-      "always"
-    ]
-  },
-  "globals": {
-    "log": true,
-    "Config": true,
-    "Events": true
-  }
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "rules": {
+        "promise/always-return": "off",
+        "max-len": "off",
+        "no-console": "off",
+        "no-restricted-syntax": "off",
+        "import/no-cycle": "off",
+        "no-await-in-loop": "off",
+        "no-plusplus": "off",
+        "class-methods-use-this": "warn",
+        "import/prefer-default-export": "off",
+        "max-classes-per-file": "off",
+        "no-underscore-dangle": "off",
+        "linebreak-style": "off",
+        "no-continue": "off",
+        "dot-notation": "off",
+        "no-param-reassign": "off",
+        "import/no-dynamic-require": "off",
+        "global-require": "off",
+        "prefer-destructuring": [
+            "error",
+            {
+                "array": false,
+                "object": true
+            },
+            {
+                "enforceForRenamedProperties": false
+            }
+        ]
+    }
 }

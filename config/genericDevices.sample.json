@@ -1,0 +1,48 @@
+[
+  {
+    "identifier": "television",
+    "checks": [
+      "ping"
+    ],
+    "pingIntervalMs": null,
+    "hostAddress": "192.168.0.XXX",
+    "name": "Living Room Television",
+    "onAvailable": [
+      {
+        "targetSpeakers": [
+          "play3",
+          "play5"
+        ],
+        "sourceSpeakers": [
+          "play3",
+          "play5"
+        ],
+        "playState": "pause",
+        "setVolume": "lowestSource"
+      },
+      {
+        "targetSpeakers": [
+          "beam"
+        ],
+        "setVolume": 10,
+        "leaveGroup": true
+      }
+    ],
+    "onUnavailable": [
+      {
+        "targetSpeakers": [
+          "beam",
+          "play3",
+          "play5"
+        ],
+        "sourceSpeakers": [
+          "play3",
+          "play5"
+        ],
+        "setVolume": "lowestSource",
+        "joinSpeaker": "play5",
+        "playState": "play"
+      }
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "maxSetVolume": 20,
+  "speakers": {
+    "XX-XX-XX-XX-XX-XX:X": {
+      "identifier": "beam"
+    },
+    "YY-YY-YY-YY-YY-YY:Y": {
+      "identifier": "play5"
+    },
+    "XX-YY-XX-YY-XX-YY:X": {
+      "identifier": "play3"
+    }
+  }
+}

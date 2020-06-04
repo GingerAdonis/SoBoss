@@ -60,5 +60,4 @@ typings/
 .next
 
 # Custom
-config/env.json
-.idea/
+dist/
